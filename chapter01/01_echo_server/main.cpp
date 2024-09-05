@@ -11,7 +11,7 @@
 
 int main(int argc, char **argv) {
     int connectSocket, dataSocket;
-    sockaddr_in hostAddr, clientAddr;
+    struct sockaddr_in hostAddr, clientAddr;
     socklen_t clientInfoSize = sizeof(clientAddr);
     /** 데이터를 저장할 buffer */
     char dataBuffer[BUFFER_MAX] = {0,};
