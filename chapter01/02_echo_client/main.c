@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     }
 
     while (true) {
-        scanf("%s", pszBuffer);
+        fgets(pszBuffer, BUFFER_MAX, stdin);
         if (strcmp(pszBuffer, "EXIT") == 0) {
             break;
         }

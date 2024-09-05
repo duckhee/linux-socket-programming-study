@@ -50,8 +50,8 @@ int main(int argc, char **argv) {
     while ((dataSocket = accept(connectSocket, (sockaddr *) &clientAddr, &clientInfoSize)) != -1) {
         puts("new Client connected");
         /** receive data and echo send */
-        while ((receiveLength = recv(dataSocket, dataBuffer, BUFFER_MAX, 0))) {
-            sendLength = send(dataSocket, dataBuffer, receiveLength, 0);
+        while ((receiveLength = recv(dataSocket, dataBuffer, BUFFER_MAX, 0)) > 0) {
+            sendLength = send(dataSocket, dataBuffer, sizeof(dataBuffer), 0);
             puts(dataBuffer);
             memset(dataBuffer, '\0', sizeof(dataBuffer));
         }
