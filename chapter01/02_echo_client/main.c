@@ -37,12 +37,15 @@ int main(int argc, char **argv) {
 
     while (true) {
         fgets(pszBuffer, BUFFER_MAX, stdin);
-        if (strcmp(pszBuffer, "EXIT") == 0) {
+        if (strcmp(pszBuffer, "EXIT\n") == 0) {
+            printf("Close Call Client\r\n");
             break;
         }
-        send(fSocket, pszBuffer, sizeof(pszBuffer) + 1, 0);
+//        send(fSocket, pszBuffer, sizeof(pszBuffer) + 1, 0);
+        write(fSocket, pszBuffer, sizeof(pszBuffer));
         memset(pszBuffer, '\0', sizeof(pszBuffer));
-        recv(fSocket, pszBuffer, sizeof(pszBuffer), 0);
+//        recv(fSocket, pszBuffer, sizeof(pszBuffer), 0);
+        read(fSocket, pszBuffer, sizeof(pszBuffer));
         printf("From Server : %s\r\n", pszBuffer);
     }
     shutdown(fSocket, SHUT_RDWR);
