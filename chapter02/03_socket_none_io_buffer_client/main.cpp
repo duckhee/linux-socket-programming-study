@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
             clientSocket,
             IPPROTO_TCP,
             TCP_NODELAY,
-            (char *) &nOpt,
+            (void *) &nOpt,
             sizeof(nOpt)
     );
 
