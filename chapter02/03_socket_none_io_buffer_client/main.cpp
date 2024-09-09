@@ -49,10 +49,8 @@ int main(int argc, char **argv) {
             break;
         }
         int pszLength = strlen(pszBuffer);
-        cout << "Buffer Length : " << pszLength << endl;
+//        cout << "Buffer Length : " << pszLength << endl;
         for (int i = 0; i < pszLength; ++i) {
-            fwrite(pszBuffer + i, sizeof(char), 1, stdout);
-            printf("\r\n");
 //            send(clientSocket, pszBuffer + i, 1, 0);
             write(clientSocket, (pszBuffer + i), 1);
         }
