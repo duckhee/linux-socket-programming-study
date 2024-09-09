@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.27)
+
+add_subdirectory(01_socket_IO_buffer)
+add_subdirectory(02_socket_none_io_buffer_server)
+add_subdirectory(03_socket_none_io_buffer_client)
