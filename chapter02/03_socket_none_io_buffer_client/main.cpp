@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
             sizeof(nOpt)
     );
 
+
     char pszBuffer[128] = {0,};
 
     while (true) {
@@ -51,8 +52,8 @@ int main(int argc, char **argv) {
         int pszLength = strlen(pszBuffer);
 //        cout << "Buffer Length : " << pszLength << endl;
         for (int i = 0; i < pszLength; ++i) {
-//            send(clientSocket, pszBuffer + i, 1, 0);
-            write(clientSocket, (pszBuffer + i), 1);
+            send(clientSocket, pszBuffer + i, 1, 0);
+//            write(clientSocket, (pszBuffer + i), 1);
         }
 
         memset(pszBuffer, '\0', sizeof(pszBuffer));
