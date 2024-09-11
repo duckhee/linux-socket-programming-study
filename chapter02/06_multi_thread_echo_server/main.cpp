@@ -15,7 +15,7 @@ void *EchoServiceThread(void *);
 int main(int argc, char **argv) {
     int serverSocket, clientSocket;
     sockaddr_in serverAddr = {0,}, clientAddr = {0,};
-    socklen_t clientAddrLen = sizeof(clientAddr);
+    socklen_t clientAddrLen;
     pthread_t thread;
 
     serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -44,6 +44,7 @@ int main(int argc, char **argv) {
     }
     cout << "Server start !" << endl;
     while ((clientSocket = accept(serverSocket, (sockaddr *) &clientAddr, &clientAddrLen)) != -1) {
+        cout << "client socket : " << clientSocket << endl;
         pthread_create(
                 &thread,
                 NULL,
@@ -51,23 +52,27 @@ int main(int argc, char **argv) {
                 &clientSocket
         );
         pthread_detach(thread);
-//        pthread_exit(&thread);
     }
+    shutdown(serverSocket, SHUT_RDWR);
     close(serverSocket);
     return 0;
 }
 
 void *EchoServiceThread(void *pSocket) {
-    int clientSocket = *(int *) &pSocket;
+    cout << "Thread Start" << endl;
+    int clientSocket = *((int *) pSocket);
+
+    cout << "[Thread] Client socket : " << clientSocket << endl;
     char pszBuffer[128] = {0,};
     socklen_t nReceive = 0;
 
-    fputs("new client Connected!", stdout);
+    fputs("new client Connected!\r\n", stdout);
     while ((nReceive = recv(clientSocket, pszBuffer, 128, 0)) > 0) {
         send(clientSocket, pszBuffer, sizeof(pszBuffer), 0);
         fputs(pszBuffer, stdout);
         memset(pszBuffer, '\0', sizeof(pszBuffer));
     }
+    cout << "Close Client socket..." << endl;
     close(clientSocket);
     return 0;
 }

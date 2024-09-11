@@ -32,9 +32,9 @@ int main(int argc, char **argv) {
         close(clientSocket);
         return -1;
     }
-
+    puts("server connected!");
     while (true) {
-        puts("server connected!");
+
         fgets(pszBuffer, 128, stdin);
         if (strcmp(pszBuffer, "EXIT\n") == 0) {
             cout << "Connection close..." << endl;
