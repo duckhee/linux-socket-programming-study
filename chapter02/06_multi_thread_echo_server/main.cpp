@@ -62,6 +62,7 @@ int main(int argc, char **argv) {
 
 void *EchoServiceThread(void *pSocket) {
     cout << "Thread Start" << endl;
+    /** pthread 에서 인자로 받은 값을 원하는 형태로 casting 하는 방법 */
     int clientSocket = *((int *) pSocket);
 
     cout << "[Thread] Client socket : " << clientSocket << endl;
