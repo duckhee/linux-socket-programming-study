@@ -45,15 +45,17 @@ int main(int argc, char **argv) {
     cout << "Server start !" << endl;
     while ((clientSocket = accept(serverSocket, (sockaddr *) &clientAddr, &clientAddrLen)) != -1) {
         cout << "client socket : " << clientSocket << endl;
+        /** thread 생성 */
         pthread_create(
                 &thread,
                 NULL,
                 EchoServiceThread,
                 &clientSocket
         );
+        /** Thrad 가 종료될 때 자원을 자동적으로 회수를 해주기 위한 detach */
         pthread_detach(thread);
     }
-    shutdown(serverSocket, SHUT_RDWR);
+//    shutdown(serverSocket, SHUT_RDWR);
     close(serverSocket);
     return 0;
 }
