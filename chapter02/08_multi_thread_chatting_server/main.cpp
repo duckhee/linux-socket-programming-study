@@ -11,7 +11,6 @@
 #include <memory.h>
 #include <list>
 
-using namespace std;
 
 pthread_mutex_t g_cs;
 int g_serverSocket;
@@ -40,7 +39,7 @@ int main(int argc, char **argv) {
 
     g_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (g_serverSocket == -1) {
-        cout << "Failed Server Socket Created ..." << endl;
+        std::cout << "Failed Server Socket Created ..." << std::endl;
         return -1;
     }
 
@@ -51,14 +50,14 @@ int main(int argc, char **argv) {
 
     int isBind = bind(g_serverSocket, (sockaddr *) &serverAddr, sizeof(serverAddr));
     if (isBind == -1) {
-        cout << "Failed bind server..." << endl;
+        std::cout << "Failed bind server..." << std::endl;
         close(g_serverSocket);
         return -1;
     }
 
     int isListened = listen(g_serverSocket, SOMAXCONN);
     if (isListened == -1) {
-        cout << "Failed Listened server socket ..." << endl;
+        std::cout << "Failed Listened server socket ..." << std::endl;
         close(g_serverSocket);
         return -1;
     }
@@ -127,12 +126,15 @@ void ShutDown() {
     g_clientList.clear();
     pthread_mutex_unlock(&g_cs);
     puts("Client All Closed...");
-    sleep(100);
+    usleep(100);
     pthread_mutex_destroy(&g_cs);
     close(g_serverSocket);
 }
 
 void SignalHandler(int sig) {
-    cout << "SIGNAL NUMBER : " << sig << endl;
+    std::cout << "SIGNAL NUMBER : " << sig << std::endl;
     ShutDown();
+    std::cout << "Close Server Program..." << std::endl;
+    exit(0);
+
 }
