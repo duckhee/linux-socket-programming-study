@@ -103,6 +103,7 @@ void *ClientHandler(void *pParam) {
     int clientSocket = *(int *) pParam;
     char pszBuffer[128] = {0,};
     int nReceive = 0;
+    puts("New Client Connected!");
     while ((nReceive = recv(clientSocket, pszBuffer, 128, 0)) > 0) {
         printf("Receive From Client : %s\r\n", pszBuffer);
         SendMsg(pszBuffer);

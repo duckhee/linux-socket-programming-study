@@ -29,12 +29,12 @@ int main(int argc, char **argv) {
         cout << "Failed Connect server ..." << endl;
         return -1;
     }
-
+    puts("Connected Server!");
     pthread_create(
             &thread,
             NULL,
-            ReceiveHandler,
-            (void *) &clientSocket
+            &ReceiveHandler,
+            &clientSocket
     );
     pthread_detach(thread);
     while (true) {
