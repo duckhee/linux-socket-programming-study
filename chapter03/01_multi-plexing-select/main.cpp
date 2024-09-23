@@ -25,7 +25,7 @@ int g_hServerSocket;
 
 std::list<int> g_clientList;
 int g_nFdSize = 0;
-
+int g_lastFd = 0;
 
 int main(int argc, char **argv) {
     sockaddr_in serverAddr = {0,};
@@ -66,10 +66,11 @@ int main(int argc, char **argv) {
         for (it = g_clientList.begin(); it != g_clientList.end(); ++it) {
             FD_SET(*it, &fdRead);
             g_nFdSize++;
+            (g_lastFd - 1) > *it ? NULL : (g_lastFd = *it + 1);
         }
 
         /** Select 를 이용한 변화 감지 대기 */
-        int result = select(0, &fdRead, NULL, NULL, NULL);
+        int result = select(g_lastFd, &fdRead, NULL, NULL, NULL);
         if (result == -1) {
             puts("Select() Error!");
             break;
@@ -121,6 +122,7 @@ void CloseAllClient() {
     std::list<int>::iterator it;
     for (it = g_clientList.begin(); it != g_clientList.end(); ++it) {
         ::shutdown(*it, SHUT_RDWR);
+        usleep(1000);
         close(*it);
     }
 }
