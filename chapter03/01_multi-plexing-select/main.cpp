@@ -24,6 +24,7 @@ void SignalHandler(int sig);
 int g_hServerSocket;
 
 std::list<int> g_clientList;
+int g_nFdSize = 0;
 
 
 int main(int argc, char **argv) {
@@ -55,7 +56,6 @@ int main(int argc, char **argv) {
 
     g_clientList.push_back(g_hServerSocket);
 
-    unsigned int nCount;
     fd_set fdRead;
     std::list<int>::iterator it;
 
@@ -65,6 +65,7 @@ int main(int argc, char **argv) {
         FD_ZERO(&fdRead);
         for (it = g_clientList.begin(); it != g_clientList.end(); ++it) {
             FD_SET(*it, &fdRead);
+            g_nFdSize++;
         }
 
         /** Select 를 이용한 변화 감지 대기 */
@@ -74,12 +75,12 @@ int main(int argc, char **argv) {
             break;
         }
         /** 변화 감지 */
-        for (it = g_clientList.begin(); it != g_clientList.end(); ++it) {
-            if (!FD_ISSET(*it, &fdRead)) {
+        for (int nIndex = 0; nIndex < g_nFdSize + 1; ++nIndex) {
+            if (!FD_ISSET(nIndex, &fdRead)) {
                 continue;
             }
             /** 서버의 연결 요청일 경우 */
-            if (g_hServerSocket == *it) {
+            if (g_hServerSocket == nIndex) {
                 sockaddr_in clientAddr = {0,};
                 socklen_t clientLen = sizeof(clientAddr);
                 int clientSocket = accept(g_hServerSocket, (sockaddr *) &clientAddr, &clientLen);
@@ -93,12 +94,12 @@ int main(int argc, char **argv) {
                 /** client 데이터 전송일 경우 */
             else {
                 char pszBuffer[BUFFER_MAX] = {0,};
-                int nReceive = ::recv(*it, (char *) pszBuffer, sizeof(pszBuffer), 0);
+                int nReceive = ::recv(nIndex, (char *) pszBuffer, sizeof(pszBuffer), 0);
                 /** client 연결 종료일 경우 */
                 if (nReceive <= 0) {
-                    close(*it);
-                    FD_CLR(*it, &fdRead);
-                    g_clientList.remove(*it);
+                    close(nIndex);
+                    FD_CLR(nIndex, &fdRead);
+                    g_clientList.remove(nIndex);
                     puts("Client Connection Closed...");
                 }
                     /** 메세지가 전달이 된 경우 */
