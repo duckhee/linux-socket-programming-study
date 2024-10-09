@@ -9,6 +9,10 @@
 #include <sys/stat.h>
 #include <signal.h>
 
+#if defined(__APPLE__)
+typedef sigval sigval_t;
+#endif
+
 void *ThreadFunction(void *pParam);
 
 void AsyncComplete(sigval_t sig);
