@@ -7,7 +7,7 @@
 #include <memory.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <signal.h>
+#include <csignal>
 
 #if defined(__APPLE__)
 typedef sigval sigval_t;
@@ -36,7 +36,7 @@ void *ThreadFunction(void *pParam) {
     memset(pszBuffer, '\0', sizeof(char) * 16);
     strcpy(pszBuffer, "Hello Async");
     /** 비동기 요청을 위한 구조체 */
-    aiocb my_aio;
+    aiocb my_aio = {0,};
     memset(&my_aio, '\0', sizeof(my_aio));
     my_aio.aio_fildes = fp;
 //    my_aio.aio_offset = 1024 * 1024 * 32; // 32MB Offset
