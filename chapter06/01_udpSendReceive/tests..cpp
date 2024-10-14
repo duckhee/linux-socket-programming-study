@@ -17,7 +17,6 @@ char g_szRemoteAddress[32];
 int g_nRemotePort;
 int g_nLocalPort;
 
-
 int main(int argc, char **argv) {
     pthread_t sendThread = {0,};
     int serverSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -39,7 +38,7 @@ int main(int argc, char **argv) {
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     addr.sin_port = htons(g_nLocalPort);
     socklen_t addrSize = sizeof(addr);
-    printf("[ip:port]%s:%d\r\n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
+
     int isBind = ::bind(serverSocket, (struct sockaddr *) &addr, addrSize);
     if (isBind == -1) {
         ErrorHandle("UDP Socket Bind Error...");
@@ -51,10 +50,10 @@ int main(int argc, char **argv) {
     char szBuffer[128];
     sockaddr_in remoteAddr;
     socklen_t nSocket = sizeof(remoteAddr);
-    long nReceive = 0;
+    int nReceive;
     while ((nReceive = recvfrom(serverSocket, szBuffer, sizeof(szBuffer), 0, (struct sockaddr *) &remoteAddr,
                                 &nSocket)) > 0) {
-        printf("[%ldbyte]-> %s\r\n", nReceive, szBuffer);
+        printf("-> %s\r\n", szBuffer);
         memset(szBuffer, '\0', sizeof(szBuffer));
     }
 
@@ -72,7 +71,6 @@ void ErrorHandle(const char *msg) {
 }
 
 void *pSendToThread(void *pParam) {
-    printf("UDP SEND THREAD\r\n");
     int clientSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (clientSocket == -1) {
         ErrorHandle("UDP Socket Create Failed...");
@@ -86,7 +84,6 @@ void *pSendToThread(void *pParam) {
     remoteAddr.sin_family = PF_INET;
 
     while (true) {
-//        memset(szBuffer, '\0', sizeof(szBuffer));
         gets(szBuffer);
         if (strcmp(szBuffer, "EXIT") == 0) {
             printf("UDP Socket Exit\r\n");
@@ -94,7 +91,6 @@ void *pSendToThread(void *pParam) {
         }
         /** UDP 전송 */
         ::sendto(clientSocket, szBuffer, strlen(szBuffer) + 1, 0, (struct sockaddr *) &remoteAddr, sizeof(remoteAddr));
-
     }
     close(*(int *) &pParam);
     close(clientSocket);
