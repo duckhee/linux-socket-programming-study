@@ -39,14 +39,15 @@ int main(int argc, char **argv) {
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     addr.sin_port = htons(g_nLocalPort);
     socklen_t addrSize = sizeof(addr);
-    printf("[ip:port]%s:%d\r\n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
+    printf("[fd-serverSocket:%d][ip:port]%s:%d\r\n", serverSocket, inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
     int isBind = ::bind(serverSocket, (struct sockaddr *) &addr, addrSize);
     if (isBind == -1) {
         ErrorHandle("UDP Socket Bind Error...");
     }
 
-    pthread_create(&sendThread, NULL, pSendToThread, (void *) &serverSocket);
-
+    pthread_create(&sendThread, NULL, &pSendToThread, (void *) serverSocket);
+    //
+    pthread_detach(sendThread);
     /** 수신 버퍼 */
     char szBuffer[128];
     sockaddr_in remoteAddr;
@@ -54,8 +55,10 @@ int main(int argc, char **argv) {
     long nReceive = 0;
     while ((nReceive = recvfrom(serverSocket, szBuffer, sizeof(szBuffer), 0, (struct sockaddr *) &remoteAddr,
                                 &nSocket)) > 0) {
-        printf("[%ldbyte]-> %s\r\n", nReceive, szBuffer);
+//        printf("[%ldbyte]-> %s\r\n", nReceive, szBuffer);
+        printf("-> %s\r\n", szBuffer);
         memset(szBuffer, '\0', sizeof(szBuffer));
+
     }
 
     puts("UDP Protocol End\r\n");
@@ -72,7 +75,8 @@ void ErrorHandle(const char *msg) {
 }
 
 void *pSendToThread(void *pParam) {
-    printf("UDP SEND THREAD\r\n");
+//    int uSocket = *(int *) &pParam;
+//    printf("UDP SEND THREAD client socket : %d\r\n", uSocket);
     int clientSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (clientSocket == -1) {
         ErrorHandle("UDP Socket Create Failed...");
@@ -86,17 +90,21 @@ void *pSendToThread(void *pParam) {
     remoteAddr.sin_family = PF_INET;
 
     while (true) {
-//        memset(szBuffer, '\0', sizeof(szBuffer));
+        memset(szBuffer, '\0', sizeof(szBuffer));
         gets(szBuffer);
         if (strcmp(szBuffer, "EXIT") == 0) {
-            printf("UDP Socket Exit\r\n");
+//            printf("UDP Socket Exit\r\n");
             break;
         }
         /** UDP 전송 */
         ::sendto(clientSocket, szBuffer, strlen(szBuffer) + 1, 0, (struct sockaddr *) &remoteAddr, sizeof(remoteAddr));
 
     }
+//    printf("close socket\r\n");
+
+
     close(*(int *) &pParam);
+//    printf("socket fd : %d\r\n", *(int *) &pParam);
     close(clientSocket);
-    return NULL;
+    return (void *) nullptr;
 }
