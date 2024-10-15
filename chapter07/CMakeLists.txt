@@ -2,3 +2,5 @@ cmake_minimum_required(VERSION 3.27)
 
 
 add_subdirectory(01_dnsQueryExample)
+add_subdirectory(02_httpClientExample)
+add_subdirectory(03_FtpClientExample)
