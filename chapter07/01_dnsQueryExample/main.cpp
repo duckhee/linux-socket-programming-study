@@ -28,6 +28,7 @@ int main(int argc, char **argv) {
     printf("호스트 주소의 길이 : %d\n", host->h_length);
     for (int i = 0; host->h_addr_list[i]; i++) {
         memcpy(&addr.s_addr, host->h_addr_list[i], sizeof(addr.s_addr));
+        /** network 주소를 변환 */
         inet_ntop(AF_INET, &addr, buf, sizeof(buf));
         printf("IP 주소(%d 번째) : %s\n", i + 1, buf);
     }
