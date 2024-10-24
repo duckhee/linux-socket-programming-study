@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     serverInfo.sin_addr.s_addr = inet_addr("127.0.0.1");
     serverInfo.sin_port = htons(25000);
     serverInfoLength = sizeof(serverInfo);
-    int isBind = bind(hServerSocket, (sockaddr *) &serverInfo, serverInfoLength);
+    int isBind = ::bind(hServerSocket, (sockaddr *) &serverInfo, serverInfoLength);
 
     if (isBind == -1) {
         cout << "Failed Bind Server Socket..." << endl;

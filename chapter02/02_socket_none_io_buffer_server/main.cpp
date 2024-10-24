@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-
+#include <netinet/tcp.h>
 
 using namespace std;
 
@@ -26,7 +26,10 @@ int main(int argc, char **argv) {
     serverInfo.sin_addr.s_addr = htonl(INADDR_ANY);
     serverInfo.sin_port = htons(25000);
 
-    if (bind(serverSocket, (sockaddr *) &serverInfo, sizeof(serverInfo)) == -1) {
+    int nOpt = 1;
+    setsockopt(serverSocket, IPPROTO_TCP, TCP_NODELAY, &nOpt, sizeof(nOpt));
+
+    if (::bind(serverSocket, (sockaddr *) &serverInfo, sizeof(serverInfo)) == -1) {
         cout << "Failed Socket Binding... " << endl;
         close(serverSocket);
         return -1;
