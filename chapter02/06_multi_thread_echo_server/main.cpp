@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
     serverAddr.sin_port = htons(25000);
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    int isBind = bind(serverSocket, (sockaddr *) &serverAddr, sizeof(serverAddr));
+    int isBind = ::bind(serverSocket, (sockaddr *) &serverAddr, sizeof(serverAddr));
     if (isBind == -1) {
         cout << "Failed Bind Socket..." << endl;
         close(serverSocket);
